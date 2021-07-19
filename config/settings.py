@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR의 기본 경로는 해당 프로젝트의 ROOT 경로
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -20,17 +21,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# django의 각종 쿠키 파일관리등 보안을 담당하는 key
+# 시크릿키 노출시 해당 jango 프로젝트의 보안기능 상실 위험성 증가.
 SECRET_KEY = '9#h3&822+x#1y2+yz-kcs*jsny_(^*fp7v)qf7^_^fbjp#4@vo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# jango 프로젝트에 대한 log를 남길지 말지를 설정하는 부분.
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
 # Application definition
-
+# 생성한 app들을 등록해주는 설정
+# app1만 적혀 있다면 app1 __init__.py에서 default app config가 정의되어있는가를 확인
 INSTALLED_APPS = [
+    'common.apps.CommonConfig',
     'app1.apps.App1Config',
     'django.contrib.admin',   # 관리자 #
     'django.contrib.auth',    # 권한 #
@@ -103,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
+# 언어 및 지역시간 설정
 
 LANGUAGE_CODE = 'ko-kr'
 
@@ -117,6 +124,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+#
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [

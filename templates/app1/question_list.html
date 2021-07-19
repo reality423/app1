@@ -1,8 +1,18 @@
 
 
 {% extends 'base.html'%}
+{% load filter %}
 {% block content %}
+
+
 <div class="container my-3">   <!-- 부트스트랩을 사용할 때 해당 클래스 호출해서 이미 설정된 스타일을 사용하는 것.-->
+
+    <!-- 페이징 : 컴퓨터가 데이터를 저장하고 검색하는 메모리관리 기법
+    paginator.count : 전체 게시물 개수를 가져옴
+    start_index : 현재 페이지의 시작 인덱스
+    end_index : 현재 페이지의 끝 인덱스
+    일려번호 = 전체 게시물 개수  - 시작인덱스 - 현재인덱스 + 1
+    -->
     <table class="table">
         <thead>
         <tr class="thead-dark">
@@ -15,9 +25,13 @@
         {% if question_list %}
         {% for question in question_list%}
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
             <td>
                 <a href="{% url 'app1:detail' question.id %}">{{question.subject}}</a>
+                {% if question.answer_set.count > 0 %}
+                <span class="text-danger">{{ question.answer_set.count }}</span>
+                {% endif %}
+
             </td>
             <td>{{ question.create_date }}</td>
 
@@ -31,6 +45,54 @@
         {% endif %}
         </tbody>
         </table>
+    <!--페이징 처리 view 영역 21.07.19-->
+        <ul class="pagination justify-content-center">
+            <!-- has_previous : 이전 페이지가 있는지 유무를 확인 -->
+            {% if question_list.has_previous %}
+            <!-- previous_page_number : 이전 페이지 번호-->
+            <li class="page-item">
+                <a class="page-link" href="?page={{ question_list.previous_page_number }}">이전</a>
+
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" herf="#" aria-disabled="true" tabindex="-1"></a>
+
+            </li>
+            {% endif %}
+            <!-- 페이지 리스트 출력하기-->
+            <!-- page_range : 페이지의 범위
+                number : 현재 페이지 번호. -->
+            {% for page_number in question_list.paginator.page_range %}
+            {% if page_number >= question_list.number|add:-2 and page_number <= question_list.number|add:2 %}
+                {% if page_number == question_list.number %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page={{page_number }}">{{ page_number }}</a>
+
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{page_number }}">{{ page_number }}</a>
+
+                </li>
+                {% endif %}
+            {% endif %}
+            {% endfor %}
+
+            <!-- has_previous : 다음 페이지가 있는지 유무를 확인 -->
+            {% if question_list.has_next %}
+            <!-- next_page_number : 디음 페이지 번호-->
+            <li class="page-item">
+                <a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" herf="#" aria-disabled="true" tabindex="-1"></a>
+            </li>
+            {% endif %}
+
+        </ul>
+
         <a href="{%  url 'app1:question_create' %}" class="btn btn-primary">질문 등록하기</a>
 </div>
 {% endblock %}
