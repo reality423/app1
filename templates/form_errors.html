@@ -1,0 +1,17 @@
+    {% if form.errors %}        <!-- 빈값이 들어갔거나 잘못된 값이 들어갔을 때 -->
+        {% for field in form %}
+            {% for error in field.errors %}
+            <!-- 필드오류 출력 / 필드 오류: 입력값 누락, 형식에 맞지 않는 값 입력 오류-->
+        <div class="alert alert-danger" role="alert">    <!--경고 메세지가 뜨는 영역-->
+                <strong>{{ field.label }}</strong>
+                {{ error }}
+                </div>
+                {% endfor %}
+            {% endfor %}
+                {% for error in form.non_filed_errors %}
+                    <!-- 논필드 오류 출력: 논플드 오류 : 입력값과 관계없이 발생한 오류-->
+                    <div class="alert alert-danger" role="alert">    <!--경고 메세지가 뜨는 영역-->
+                    <strong>{{ error }}</strong>
+                        </div>
+                {% endfor %}
+        {% endif %}

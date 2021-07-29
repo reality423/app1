@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',   # 관리자 #
     'django.contrib.auth',    # 권한 #
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'django.contrib.sessions',   # 로그인 상태 컨트롤
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
@@ -80,14 +80,28 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# DBMS mysql 변경
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'crawl_data',
+        'USER': 'crawl_user',
+        'PASSWORD': '1234',
+        'HOST' : 'localhost',
+        'PORT' : '3306',
+        'OPTIONS' : {
+            'init_command' : 'SET sql_mode="STRICT_TRANS_TABLES"',
+            'charset':'UTF8',
+        }
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -130,3 +144,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'

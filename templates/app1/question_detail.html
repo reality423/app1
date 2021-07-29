@@ -1,8 +1,29 @@
 
 {% extends 'base.html'%}
 {% block content %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".delete").on('click',function(){
+        if(confirm("진짜로 삭제하시겠습니다까?")){
+            location.href = $(this).data('uri');
+        }
+    });
+});
+</script>
 
 <div class="container my-3">
+    <!-- 에러 메세지 표시-->
+    {% if messages %}
+    <div class="alert alert-danger my-3" role="alert">
+        {% for msg in messages %}
+        <strong>{{msg.tags}}</strong>
+        <ul><li>{{ msg.message}}</li></ul>
+        {% endfor %}
+    </div>
+
+    {% endif%}
+
+
     <h2 class="border-bottom py-2">{{ question.subject }}</h2>  <!--질문 이름 들어오는 곳-->
     <!--border-bottom py-2 : padding y축으로 2-->
     <div class="card my-3">
@@ -12,10 +33,23 @@
             </div>
             <div class="d-flex justify-content-end">
                 <div class="badge badge-light p-2">
+                    <div class="m-2">{{question.author.username}}</div>
                     {{question.create_date}}
                 </div>
 
             </div>
+            <!-- 21.07.21 수정버튼 등록
+            data-uri : data 접두사라는 것이 붙은 데이터 문자열
+            data-uri가 이미지, 영상, 사운드 파일등의 데이터 전송에도 사용할 수 있기 때문
+            data-uri : 파일을 문자열로 변환한 것. -->
+            <div class="my-3">
+                <a href="{% url 'app1:question_modify' question.id %}"
+                   class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href="#" data-uri="{% url 'app1:question_delete' question.id%}"
+                   class="delete btn btn-sm btn-outline-secondary">삭제</a>
+            </div>
+
+
         </div>
     </div>
     <h5 class="border-bottom my-3 py-2">
@@ -29,11 +63,20 @@
             </div>
             <div class="d-flex justify-content-end">
                 <div class="badge badge-light p-2">
+                      <div class="m-2">{{answer.author.username}}</div>
                     {{ answer.create_date}}
 
                 </div>
 
             </div>
+                {% if request.user == answer.author %}
+                 <div class="my-3">
+                     <a href="{% url 'app1:answer_modify' answer.id %}"
+                     class="btn btn-sm btn-outline-secondary">수정</a>
+                     <a href="#" data-uri="{% url 'app1:answer_delete' answer.id%}"
+                   class="delete btn btn-sm btn-outline-secondary">삭제</a>
+                 </div>
+                 {% endif%}
         </div>
     </div>
 
@@ -41,9 +84,26 @@
 
     <form action="{% url 'app1:answer_create' question.id %}" method="post">
     {% csrf_token %}
-
-    <textarea name="answer_content" id="answer_content" rows="15"></textarea>
-    <input type="submit" value="답변등록하기">
+    {% if form.errors %}        <!-- 빈값이 들어갔거나 잘못된 값이 들어갔을 때 -->
+        <div class="alert alert-danger" role="alert">    <!--경고 메세지가 뜨는 영역-->
+            {% for field in form %}
+                {% if field.errors %}
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+     <div class="form-group">
+    <textarea {% if not user.is_authenticated %}disabled{% endif %}
+              name="answer_content" id="answer_content" class="form-control" rows="15"></textarea>
+        </div>
+        <input type="submit" value="답변등록하기">
     </form>
+</form>
 </div>
 {% endblock%}
+{% block script %}
+
+
+{% endblock %}

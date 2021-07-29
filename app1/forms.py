@@ -1,5 +1,5 @@
 from django import forms
-from app1.models import Question
+from app1.models import Question, Answer
 
 # QuestionForm 같은 클래스를 장고 폼이라 부른다.
 # 장고폼에는 2가지 폼이 있고
@@ -28,4 +28,12 @@ class QuestionForm(forms.ModelForm):
         labels = {
             'subject': '제목',
             'content': '내용',
+        }
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['answer_content']
+        labels = {
+            'answer_content': '답변내용',
         }
